@@ -1,0 +1,11 @@
+.status
+{
+	color: green;
+	text-align: center;
+	font-size: 25px;
+}
+
+.btn[disabled]
+{
+	color: black;
+}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html ng-app = "phoneBook">
+<head>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="phoneBookStyle.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script type="text/javascript" src="frontend.js"></script>
+	<title>Phone Book</title>
+</head>
+<body ng-controller = "mainControl as ctrl">
+	<h1 class = "text-center">Phone Book</h1>
+	<div class="container">
+		<form name="newContact" novalidate> 
+
+			<div class="row">
+				<div class="form-group col-md-6 col-md-offset-3" ng-class = "{ 'has-error' :  newContact.name.$invalid && !newContact.name.$pristine}">
+					<label for="name">Name</label>
+					<input type="text"
+					name="name"
+					ng-model="ctrl.contact.name"
+					required
+					class="form-control">
+					<p class="help-block" ng-show="newContact.name.$error.required && !newContact.name.$pristine">
+						Name is required
+					</p>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="form-group col-md-6 col-md-offset-3" ng-class = "{ 'has-error' : newContact.phno.$invalid && !newContact.phno.$pristine}">
+					<label for="phno">Phone Number</label>
+					<input 
+						type="number"
+						name="phno"
+						required
+						ng-minlength = 10
+						ng-maxlength = 11
+						ng-model="ctrl.contact.phno"
+						class="form-control">
+					<p class="help-block" ng-show="newContact.phno.$error.required && !newContact.phno.$pristine">
+						Phone Number is required
+					</p>
+					<p class="help-block" ng-show="(newContact.phno.$error.minlength || newContact.phno.$error.maxlength) && !newContact.phno.$pristine">
+						Phone number length incorrect						
+					</p>
+					<p class="help-block" ng-show="newContact.phno.$error.number && !newContact.phno.$pristine">
+						Phone number should contain only numbers
+					</p>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="form-group col-md-6 col-md-offset-3" ng-class = "{'has-error' :  newContact.email.$invalid && !newContact.email.$pristine}">
+					<label for="email">Email</label>
+					<input type="email"
+					name="email"
+					required
+					ng-model="ctrl.contact.email"
+					class="form-control">
+					<p ng-show = "newContact.email.$invalid && !newContact.email.$pristine" class="help-block">
+						Please Type A Valid Email
+					</p>
+
+					<p ng-show = "newContact.email.$error.required && !newContact.email.$pristine" class="help-block">
+						Email is required
+					</p>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2 col-md-offset-3 form-group">
+					<button class="btn btn-success form-control"
+						name="add" 
+						ng-disabled="newContact.$invalid || newContact.$pending"
+						ng-click="ctrl.addContact(); newContact.$setPristine()"
+						ng-show = "ctrl.editingOnly()">
+							Add New Contact
+					</button>
+				</div>
+				<div class="col-md-2 form-group">
+					<button class="btn btn-primary form-control"
+						name="update"
+						ng-disabled="newContact.$invalid || newContact.$pending"
+						ng-click="ctrl.updateContact(); newContact.$setPristine()"
+						ng-hide = "ctrl.editingOnly()">
+							Save Contact
+					</button>
+				</div>
+				<div class="col-md-2 form-group">
+					<button class="btn btn-info form-control" name="clear" ng-click="ctrl.clearField(); newContact.$setPristine()">		Clear Fields
+					</button>
+				</div>
+			</div>
+
+			<p class="help-block status" ng-show = "ctrl.updated">Contact Updated</p>
+			<p class="help-block status" ng-show = "ctrl.deleted">Contact Deleted</p>
+			<p class="help-block status" ng-show = "ctrl.added">New Contact Added</p>
+
+		</form>
+
+		<h1 class="text-center">Stored Contacts</h1>
+
+		<div class="table-responsive">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<td>Name</td>
+						<td>Phone Number</td>
+						<td>Email</td>
+						<td>Options</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat = "contact in ctrl.contacts | orderBy : 'name' ">
+						<td>{{contact.name}}</td>
+						<td>{{contact.phno}}</td>
+						<td>{{contact.email}}</td>
+						<td>
+							<button class="btn btn-warning" name="edit" ng-click="ctrl.editContact(contact)">Edit</button>
+							<button class="btn btn-error" name="delete" ng-click="ctrl.deleteContact(contact._id)">Delete</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</body>
+</html>
